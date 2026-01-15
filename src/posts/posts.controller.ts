@@ -12,6 +12,7 @@ import {
   Put,
   Query,
   Search,
+  UseGuards,
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
@@ -19,37 +20,60 @@ import { PostsService } from './posts.service';
 import { createPostDto } from './dto/createPost.dto';
 import { updatePostDto } from './dto/updatePost.dto';
 import { PostExistPipe } from './pipes/post-exist.pipe';
-import {  Post as PostEntity } from './entities/post.entity';
+import { Post as PostEntity } from './entities/post.entity';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { CurrentUser } from 'src/auth/decorators/current-user.decorator';
+import { User, UserRole } from 'src/auth/entities/user.entity';
+import { Roles } from 'src/auth/decorators/roles.decorator';
+import { RolesGuard } from 'src/auth/guards/roles.guard';
 
 @Controller('posts')
 export class PostsController {
   constructor(private readonly postsService: PostsService) {}
 
-@Get()
-async  getAllPosts(@Query('search') search?: string): Promise< PostEntity[]> {
+  @Get()
+  async getAllPosts(@Query('search') search?: string): Promise<PostEntity[]> {
     const allPosts = await this.postsService.findAll();
     return allPosts;
   }
 
+  @Get(':id')
+  async getPostById(
+    @Param('id', ParseIntPipe, PostExistPipe) id: number,
+  ): Promise<PostEntity> {
+    return await this.postsService.findOne(id);
+  }
+
   @Post()
   @HttpCode(HttpStatus.CREATED)
-  async createPost (@Body() createPostData:createPostDto):Promise<PostEntity>{
-    return this.postsService.create(createPostData)
+  @UseGuards(JwtAuthGuard)
+  async createPost(
+    @Body() createPostData: createPostDto,
+    @CurrentUser() user: User,
+  ): Promise<PostEntity> {
+    return this.postsService.create(createPostData, user);
+  }
+ 
+// post onwer and admin can update post
+  @Put(':id')
+  @UseGuards(JwtAuthGuard)
+  async updatePost(
+    @Param('id', ParseIntPipe, PostExistPipe) id: number,
+    @Body() updatePostData: updatePostDto,
+    @CurrentUser() user: User,
+  ) {
+    return this.postsService.update(id, updatePostData, user);
   }
 
-  @Get(':id')
-  async getPostById(@Param('id',ParseIntPipe,PostExistPipe) id:number):Promise<PostEntity>{
-    return await this.postsService.findOne(id)
-  }
-
+  // Admin can delete post not any other users
   @Delete(':id')
-  async deletePost(@Param('id',ParseIntPipe,PostExistPipe) id:number):Promise<string>{
+  @UseGuards(JwtAuthGuard,RolesGuard) // jwtGurad will see the jwt and verification it and roleGuard will see the role of the user and permission
+  @Roles(UserRole.ADMIN) // protected to admin route
+  async deletePost(
+    @Param('id', ParseIntPipe, PostExistPipe) id: number,
+  ): Promise<string> {
     return await this.postsService.delete(id);
   }
 
-  @Put(':id')
-  async updatePost(@Param('id',ParseIntPipe,PostExistPipe) id:number, @Body() updatePostData:updatePostDto){
-    return this.postsService.update(id,updatePostData)
-  }
-
+ 
 }

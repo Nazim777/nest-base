@@ -6,6 +6,7 @@ import { PostsModule } from './posts/posts.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { DbLogger } from './database/db-logger.service';
 //import { Post } from './posts/entities/post.entity';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -23,7 +24,8 @@ import { DbLogger } from './database/db-logger.service';
    // entities:[Post] // register all the entities in this array
 
     }),
-    PostsModule
+    PostsModule,
+    AuthModule
   ],
   controllers: [AppController],
   providers: [AppService, DbLogger],
