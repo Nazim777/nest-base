@@ -2,11 +2,10 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
-import { PostsController } from './posts/posts.controller';
-import { PostsService } from './posts/posts.service';
 import { PostsModule } from './posts/posts.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { DbLogger } from './database/db-logger.service';
+//import { Post } from './posts/entities/post.entity';
 
 @Module({
   imports: [
@@ -17,15 +16,16 @@ import { DbLogger } from './database/db-logger.service';
     type:'postgres',
     url:process.env.DATABASE_URL,
     ssl:{
-      rejectUnauthorized:false //
+      rejectUnauthorized:false
     },
-    autoLoadEntities:true,
-    synchronize:true //  turn OFF in production
+    autoLoadEntities:true, // it will automatically laod the entities
+    synchronize:true, //  turn OFF in production
+   // entities:[Post] // register all the entities in this array
 
     }),
     PostsModule
   ],
-  controllers: [AppController, PostsController],
-  providers: [AppService, PostsService, DbLogger],
+  controllers: [AppController],
+  providers: [AppService, DbLogger],
 })
 export class AppModule {}
