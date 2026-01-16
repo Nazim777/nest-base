@@ -9,6 +9,7 @@ import { DbLogger } from './database/db-logger.service';
 import { AuthModule } from './auth/auth.module';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { CacheModule } from '@nestjs/cache-manager';
+import { FileUploadModule } from './file-upload/file-upload.module';
 
 @Module({
   imports: [
@@ -43,7 +44,8 @@ import { CacheModule } from '@nestjs/cache-manager';
       ttl:30000 ,// milisecond , cache will stay in the memory for 30 second
       max:100    // it will cach the 100 item
 
-    })
+    }),
+    FileUploadModule
   ],
   controllers: [AppController],
   providers: [AppService, DbLogger],
