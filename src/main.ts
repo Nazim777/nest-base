@@ -1,10 +1,13 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { ValidationPipe } from '@nestjs/common';
+import { Logger, ValidationPipe } from '@nestjs/common';
+import { LoggingInterCeptor } from './common/interceptors/logging.interceptor';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
-
+  const logger = new Logger('Bootstrap')
+  const app = await NestFactory.create(AppModule,{
+    logger:['warn','error','fatal','verbose','log']
+  });
   // global validation
 app.useGlobalPipes(
   new ValidationPipe({
@@ -14,6 +17,7 @@ app.useGlobalPipes(
     disableErrorMessages:false
   })
 )
+app.useGlobalInterceptors(new LoggingInterCeptor)
   await app.listen(process.env.PORT ?? 3000);
 }
 bootstrap();
