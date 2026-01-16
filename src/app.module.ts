@@ -10,6 +10,7 @@ import { AuthModule } from './auth/auth.module';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { CacheModule } from '@nestjs/cache-manager';
 import { FileUploadModule } from './file-upload/file-upload.module';
+import { EventsModule } from './events/events.module';
 
 @Module({
   imports: [
@@ -45,7 +46,8 @@ import { FileUploadModule } from './file-upload/file-upload.module';
       max:100    // it will cach the 100 item
 
     }),
-    FileUploadModule
+    FileUploadModule,
+    EventsModule
   ],
   controllers: [AppController],
   providers: [AppService, DbLogger],
