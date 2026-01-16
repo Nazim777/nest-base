@@ -26,14 +26,16 @@ import { CurrentUser } from 'src/auth/decorators/current-user.decorator';
 import { User, UserRole } from 'src/auth/entities/user.entity';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { RolesGuard } from 'src/auth/guards/roles.guard';
+import { PaginatedResponse } from 'src/common/interface/paginated-response.interface';
+import { FindPostQueryDto } from './dto/find-post-query.dto';
 
 @Controller('posts')
 export class PostsController {
   constructor(private readonly postsService: PostsService) {}
 
   @Get()
-  async getAllPosts(@Query('search') search?: string): Promise<PostEntity[]> {
-    const allPosts = await this.postsService.findAll();
+  async getAllPosts(@Query() query:FindPostQueryDto): Promise<PaginatedResponse<PostEntity>> {
+    const allPosts = await this.postsService.findAll(query);
     return allPosts;
   }
 
@@ -67,11 +69,12 @@ export class PostsController {
 
   // Admin can delete post not any other users
   @Delete(':id')
+  @HttpCode(HttpStatus.NO_CONTENT)
   @UseGuards(JwtAuthGuard,RolesGuard) // jwtGurad will see the jwt and verification it and roleGuard will see the role of the user and permission
   @Roles(UserRole.ADMIN) // protected to admin route
   async deletePost(
     @Param('id', ParseIntPipe, PostExistPipe) id: number,
-  ): Promise<string> {
+  ): Promise<void> {
     return await this.postsService.delete(id);
   }
 
