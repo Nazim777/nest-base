@@ -15,6 +15,7 @@ import { CurrentUser } from './decorators/current-user.decorator';
 import { RolesGuard } from './guards/roles.guard';
 import { Roles } from './decorators/roles.decorator';
 import { UserRole } from './entities/user.entity';
+import { LoginThrottlerGuard } from './guards/login-throttler.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -26,6 +27,8 @@ export class AuthController {
     return this.authService.register(registerUserData);
   }
 
+  // rate limit to login using throttler. we can create rate limiter for other api also
+  @UseGuards(LoginThrottlerGuard)
   @Post('login')
   async login(@Body() loginUserData: LoginDto) {
     return this.authService.login(loginUserData);

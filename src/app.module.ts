@@ -7,9 +7,20 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { DbLogger } from './database/db-logger.service';
 //import { Post } from './posts/entities/post.entity';
 import { AuthModule } from './auth/auth.module';
+import { ThrottlerModule } from '@nestjs/throttler';
 
 @Module({
   imports: [
+    // rate limite module
+    ThrottlerModule.forRoot(
+      [
+        {
+          ttl:60000,   // 1 min
+          limit:5  // limit 5
+
+        }
+      ]
+    ),
     ConfigModule.forRoot({ 
     isGlobal: true, // this makes the env variable available globally
     envFilePath: ['.env.local'] }),
