@@ -1,98 +1,303 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# 🚀 NestJS Backend Starter
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+A **production-ready NestJS backend application** covering all essential and advanced backend topics including authentication, authorization, database, caching, rate limiting, events, file uploads, and more.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+This project is designed as a **solid reference / starter** for real-world applications.
 
-## Description
+---
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## 🧱 Tech Stack
 
-## Project setup
+* **Framework:** NestJS
+* **Language:** TypeScript
+* **Database:** PostgreSQL
+* **ORM:** TypeORM
+* **Auth:** JWT (Access & Refresh Tokens)
+* **Authorization:** RBAC (Role-Based Access Control)
+* **Caching:** Cache Manager (Redis / Memory)
+* **Rate Limiting:** @nestjs/throttler
+* **File Upload:** Multer
+* **Validation:** class-validator & class-transformer
+
+---
+
+## 📁 Project Structure
 
 ```bash
-$ npm install
+src/
+├── auth/              # Authentication & authorization
+├── users/             # User module
+├── posts/             # Example resource module
+├── common/             # Shared utilities
+│   ├── decorators/    # Custom decorators
+│   ├── guards/        # Auth & role guards
+│   ├── interceptors/  # Logging / transform interceptors
+│   ├── middleware/    # Custom middleware
+│   ├── pipes/         # Validation & parsing pipes
+│   └── utils/         # Helpers & constants
+├── database/          # TypeORM configuration
+├── events/            # Event emitters & listeners
+├── app.module.ts
+└── main.ts
 ```
 
-## Compile and run the project
+---
+
+## ⚙️ Application Setup
+
+### Install Dependencies
 
 ```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+npm install
 ```
 
-## Run tests
+### Environment Variables (`.env`)
+
+```env
+PORT=3000
+DATABASE_URL=postgresql://user:password@localhost:5432/dbname
+JWT_ACCESS_SECRET=your_secret
+JWT_REFRESH_SECRET=your_refresh_secret
+JWT_ACCESS_EXPIRES=15m
+JWT_REFRESH_EXPIRES=7d
+```
+
+### Run the App
 
 ```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+npm run start:dev
 ```
 
-## Deployment
+---
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+## 🗄️ Database (PostgreSQL + TypeORM)
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+* Entity-based schema definition
+* Auto migrations support
+* Repository pattern
 
-```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
+### Example Entity
+
+```ts
+@Entity('users')
+export class User {
+  @PrimaryGeneratedColumn()
+  id: number;
+
+  @Column({ unique: true })
+  email: string;
+
+  @Column()
+  password: string;
+
+  @Column({ default: 'USER' })
+  role: UserRole;
+}
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+---
 
-## Resources
+## 📦 DTO (Data Transfer Objects)
 
-Check out a few resources that may come in handy when working with NestJS:
+DTOs ensure **validation**, **type safety**, and **clean APIs**.
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+```ts
+export class CreateUserDto {
+  @IsEmail()
+  email: string;
 
-## Support
+  @IsString()
+  @MinLength(6)
+  password: string;
+}
+```
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+Global validation pipe is enabled in `main.ts`.
 
-## Stay in touch
+---
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+## 🔐 Authentication (JWT)
 
-## License
+* Login & Register
+* Access Token & Refresh Token
+* Password hashing using bcrypt
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+### JWT Strategy
+
+```ts
+@Injectable()
+export class JwtStrategy extends PassportStrategy(Strategy) {
+  constructor() {
+    super({ jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken() });
+  }
+}
+```
+
+---
+
+## 🛂 Authorization (RBAC)
+
+Role-based access using **Guards & Decorators**.
+
+### Roles Decorator
+
+```ts
+@SetMetadata('roles', ['ADMIN'])
+```
+
+### Roles Guard
+
+```ts
+if (!roles.includes(user.role)) throw new ForbiddenException();
+```
+
+---
+
+## 📤 File Upload (Multer)
+
+Supports single & multiple file uploads.
+
+```ts
+@UseInterceptors(FileInterceptor('file'))
+@Post('upload')
+upload(@UploadedFile() file: Express.Multer.File) {}
+```
+
+* File validation
+* Disk / cloud storage ready
+
+---
+
+## 🧠 Middleware
+
+Used for request-level logic such as logging or request enrichment.
+
+```ts
+@Injectable()
+export class LoggerMiddleware implements NestMiddleware {
+  use(req: Request, res: Response, next: NextFunction) {
+    console.log(req.method, req.url);
+    next();
+  }
+}
+```
+
+---
+
+## 🎯 Interceptors
+
+Used for:
+
+* Response transformation
+* Logging
+* Performance tracking
+
+```ts
+@Injectable()
+export class TransformInterceptor implements NestInterceptor {
+  intercept(ctx, next) {
+    return next.handle().pipe(map(data => ({ data })));
+  }
+}
+```
+
+---
+
+## ⚡ Caching
+
+* Cache-first strategy
+* Redis or in-memory
+
+```ts
+@Cacheable('posts')
+findAll() {}
+```
+
+Improves performance and reduces DB load.
+
+---
+
+## 🚦 Rate Limiting
+
+Protect APIs from abuse using throttling.
+
+```ts
+@Throttle(10, 60)
+@Get()
+findAll() {}
+```
+
+Configurable globally or per-route.
+
+---
+
+## 📡 Events (Event Emitter)
+
+Decouple business logic using events.
+
+```ts
+this.eventEmitter.emit('user.created', user);
+```
+
+Listeners handle side effects like emails or logs.
+
+---
+
+## 📄 Pagination
+
+Standard pagination using query params.
+
+```ts
+GET /posts?page=1&limit=10
+```
+
+```ts
+const [data, total] = await repo.findAndCount({ skip, take });
+```
+
+---
+
+## 🧪 Error Handling
+
+* Global exception filter
+* Consistent API error format
+
+```json
+{
+  "statusCode": 400,
+  "message": "Validation failed",
+  "error": "Bad Request"
+}
+```
+
+---
+
+## 📐 Best Practices
+
+* Thin controllers, fat services
+* Modular architecture
+* Environment-based configs
+* Reusable guards & decorators
+* Clean commit messages
+
+---
+
+## 🧩 Future Enhancements
+
+* Swagger API documentation
+* Background jobs (BullMQ)
+* WebSockets
+* Microservices support
+
+---
+
+## 👨‍💻 Author
+
+**Mohammad Nazim Hossain**
+Full Stack Developer | NestJS | Node.js
+
+---
+
+## ⭐️ Support
+
+If you find this project helpful, give it a ⭐️ and use it as your production-ready NestJS boilerplate.
